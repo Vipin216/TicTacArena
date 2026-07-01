@@ -8,9 +8,13 @@ from .forms import RegisterForm,LoginForm
 
 
 @login_required
-def home(request):
-    return HttpResponse('<h1> Welcome to TicTacarena<h1><br><a href="/logout/">Logout</a>')
+# def home(request):
+#     return HttpResponse('<h1> Welcome to TicTacarena<h1><br><a href="/logout/">Logout</a>')
 
+
+@login_required
+def lobby(request):
+    return render(request,"users/lobby.html")
 
 def register_view(request):
     if request.method=="POST":
@@ -40,7 +44,7 @@ def login_view(request):
 
             if user is not None:
                 login(request,user)
-                next_url = request.POST.get("next") or "home"
+                next_url = request.POST.get("next") or "lobby"
                 return redirect(next_url)
 
     
@@ -54,5 +58,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
+
 
 

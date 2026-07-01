@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+Lobby
+{% endblock %}
+
+{% block content %}
+
+<h2>Lobby</h2>
+
+<ul>
+    <li><form action="{% url 'create_room' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">
+        Create Room
+    </button>
+    </form></li>
+    
+    <li><a href="#">Join Room</a></li>
+    <li><a href="#">Find Match (Coming Soon)</a></li>
+</ul>
+
+{% endblock %}

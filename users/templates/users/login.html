@@ -1,23 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>Login</h1>
+{% block title %}
+Login
+{% endblock %}
+
+{% block content %}
+
+<h2>Login</h2>
 
 <form method="POST">
 
     {% csrf_token %}
 
     {{ form.as_p }}
+
     <input type="hidden" name="next" value="{{ request.GET.next }}">
+
     <button type="submit">
         Login
     </button>
 
 </form>
 
-</body>
-</html>
+<p>
+    Don't have an account?
+    <a href="{% url 'register' %}">
+        Register
+    </a>
+</p>
+
+{% endblock %}

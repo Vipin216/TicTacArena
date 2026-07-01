@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            TicTacArena
+        {% endblock %}
+    </title>
+</head>
+<body>
+
+<header>
+
+    <h1>TicTacArena</h1>
+
+    {% if request.user.is_authenticated %}
+
+        <p>
+            Welcome, {{ request.user.username }}
+        </p>
+
+        <a href="{% url 'lobby' %}">Lobby</a> |
+        <a href="#">Profile</a> |
+        <a href="{% url 'logout' %}">Logout</a>
+
+    {% endif %}
+
+    <hr>
+
+</header>
+
+<main>
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+</body>
+</html>

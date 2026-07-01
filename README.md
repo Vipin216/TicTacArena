@@ -75,6 +75,21 @@ TicTacArena/
 ├── requirements.txt
 └── README.md
 ```
+### ✅ Day 2 - User Authentication
+
+Completed:
+
+- User registration
+- User login
+- User logout
+- Password hashing
+- Session-based authentication
+- Protected routes using `@login_required`
+- Automatic redirect after successful login
+
+
+
+
 
 ## Author
 
