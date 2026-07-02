@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+Game
+{% endblock %}
+
+{% block content %}
+
+<h2>Game Room</h2>
+
+<p>
+Room Code:
+<strong>{{ room.room_code }}</strong>
+</p>
+
+<p>
+Player 1:
+{{ room.player1.username }}
+</p>
+
+<p>
+Player 2:
+{{ room.player2.username }}
+</p>
+
+<p>
+Status:
+{{ room.status }}
+</p>
+
+<h3>
+Game Board Coming Soon...
+</h3>
+
+<script>
+
+const roomCode = "{{ room.room_code }}";
+
+const socket = new WebSocket(
+    "ws://"
+    + window.location.host
+    + "/ws/game/"
+    + roomCode
+    + "/"
+);
+
+socket.onopen = function () {
+    console.log("Connected!");
+};
+
+socket.onclose = function () {
+    console.log("Disconnected!");
+};
+
+</script>
+{% endblock %}
+
+
