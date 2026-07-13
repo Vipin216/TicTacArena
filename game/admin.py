@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Room
+from .models import Room,Match,MatchmakingQueue
 
 
 @admin.register(Room)
@@ -11,3 +11,7 @@ class RoomAdmin(admin.ModelAdmin):
         "status",
         "created_at",
     )
+
+
+admin.site.register(Match)
+admin.site.register(MatchmakingQueue)

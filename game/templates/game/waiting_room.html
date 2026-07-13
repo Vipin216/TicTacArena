@@ -14,4 +14,45 @@ Waiting Room
 
 <p>Waiting for Player 2...</p>
 
+
+
+
+<script>
+
+const roomCode = "{{ room.room_code }}";
+
+const socket = new WebSocket(
+    "ws://"
+    + window.location.host
+    + "/ws/game/"
+    + roomCode
+    + "/"
+);
+
+socket.onopen = function () {
+    console.log("Connected!");
+};
+
+socket.onmessage = function(event){
+
+    const data = JSON.parse(event.data);
+
+    console.log(data);
+
+    if(data.type === "game_start"){
+
+        window.location.href =
+            "/game/" + roomCode + "/";
+
+    }
+
+};
+
+socket.onclose = function(){
+    console.log("Disconnected!");
+};
+
+</script>
+
+
 {% endblock %}

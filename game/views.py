@@ -1,8 +1,11 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Room
+from .models import Match,MatchmakingQueue
 from .forms import JoinRoomForm
 from .utils import generate_room_code
+from django.db.models import Q
+from .matchmaking_service import process_matchmaking
 
 
 @login_required
@@ -10,7 +13,13 @@ def create_room(request):
     if request.method != "POST":
         return redirect("lobby")
 
-    room = Room.objects.create(room_code=generate_room_code(),player1=request.user,)
+    room = Room.objects.create(room_code=generate_room_code(),player1=request.user,
+        board=[
+            ["","",""],
+            ["","",""],
+            ["","",""]
+        ],
+    )
 
     return redirect("waiting_room",room.room_code)
 
@@ -52,7 +61,7 @@ def join_room(request):
                     room.status = "ACTIVE"
                     room.save()
 
-                    return redirect("game_room",room.room_code)
+                    return redirect("waiting_room", room.room_code)
                 
     else:
         form = JoinRoomForm()
@@ -66,3 +75,40 @@ def join_room(request):
 def game_room(request,room_code):
     room=get_object_or_404(Room,room_code=room_code)
     return render(request,"game/game_room.html",{"room":room})
+
+
+
+
+@login_required
+def match_history(request):
+    matches = Match.objects.filter(
+        Q(player1=request.user)|Q(player2=request.user)).order_by("-played_at")
+    
+    return render(request,"game/match_history.html",{"matches":matches,},)
+
+
+
+
+
+
+@login_required
+def find_match(request):
+
+    room = process_matchmaking(request.user)
+    if room:
+        return redirect("game_room",room_code=room.room_code,)
+    
+    return redirect("matchmaking")
+
+
+
+
+
+@login_required
+def matchmaking(request):
+
+    MatchmakingQueue.objects.get_or_create(
+        player=request.user
+    )
+
+    return render(request,"game/matchmaking.html")

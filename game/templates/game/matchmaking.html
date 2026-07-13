@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}
+Matchmaking
+{% endblock %}
+
+{% block content %}
+
+<h2>Finding Match...</h2>
+
+<p id="status">
+Waiting for an opponent...
+</p>
+
+<script>
+
+const socket = new WebSocket(
+
+    "ws://"
+    + window.location.host
+    + "/ws/matchmaking/"
+
+);
+
+socket.onopen = function(){
+
+    console.log("Matchmaking Connected");
+
+};
+
+socket.onclose = function(){
+
+    console.log("Disconnected");
+
+};
+
+socket.onmessage = function(event){
+
+    const data = JSON.parse(event.data);
+
+    console.log(data);
+    if(data.type=="match_found"){
+        window.location.href="/game/"+data.room_code+"/";
+    }
+
+};
+
+</script>
+
+{% endblock %}
