@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ player.username }}
+{% endblock %}
+
+{% block content %}
+
+<h2>{{ player.username }}</h2>
+
+<hr>
+
+<p>
+    <strong>ELO:</strong>
+    {{ player.elo }}
+</p>
+
+<p>
+    <strong>Wins:</strong>
+    {{ player.wins }}
+</p>
+
+<p>
+    <strong>Losses:</strong>
+    {{ player.losses }}
+</p>
+
+<p>
+    <strong>Draws:</strong>
+    {{ player.draws }}
+</p>
+
+<hr>
+
+<h3>Recent Matches</h3>
+
+<table border="1" cellpadding="10">
+
+<tr>
+    <th>Opponent</th>
+    <th>Result</th>
+    <th>Date</th>
+</tr>
+
+{% for match in matches %}
+
+<tr>
+
+<td>
+
+{% if match.player1 == player %}
+
+{{ match.player2.username }}
+
+{% else %}
+
+{{ match.player1.username }}
+
+{% endif %}
+
+</td>
+
+<td>
+
+{% if match.is_draw %}
+
+Draw
+
+{% elif match.winner == player %}
+
+Won
+
+{% else %}
+
+Lost
+
+{% endif %}
+
+</td>
+
+<td>
+
+{{ match.played_at }}
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="3">
+
+No matches played yet.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

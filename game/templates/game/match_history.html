@@ -27,9 +27,9 @@ Match History
 <td>
 
 {% if match.player1 == request.user %}
-    {{ match.player2.username }}
+    <a href="{% url 'player_profile' match.player2.username %}">{{ match.player2.username }}</a>
 {% else %}
-    {{ match.player1.username }}
+    <a href="{% url 'player_profile' match.player1.username %}">{{ match.player1.username }}</a>
 {% endif %}
 
 </td>

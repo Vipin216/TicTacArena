@@ -6,7 +6,7 @@ from .forms import JoinRoomForm
 from .utils import generate_room_code
 from django.db.models import Q
 from .matchmaking_service import process_matchmaking
-
+from users.models import User
 
 @login_required
 def create_room(request):
@@ -79,6 +79,7 @@ def game_room(request,room_code):
 
 
 
+
 @login_required
 def match_history(request):
     matches = Match.objects.filter(
@@ -112,3 +113,24 @@ def matchmaking(request):
     )
 
     return render(request,"game/matchmaking.html")
+
+
+
+
+
+
+def leaderboard(request):
+    print("Leaderboard view called")
+    players = User.objects.order_by("-elo","-wins")
+    print(players)
+    return render(request,"game/leaderboard.html",{"players":players,},)
+
+
+
+
+
+@login_required
+def player_profile(request,username):
+    player=get_object_or_404(User,username=username)
+    matches = Match.objects.filter(Q(player1=player)|Q(player2=player)).order_by("-played_at")[:10]
+    return render(request,"game/player_profile.html",{"player":player,"matches":matches,},)

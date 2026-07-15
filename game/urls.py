@@ -10,4 +10,6 @@ urlpatterns = [
     path("history/",views.match_history,name="match_history"),
     path("find-match/",views.find_match,name="find-match"),
     path("matchmaking/",views.matchmaking,name="matchmaking"),
+    path("leaderboard/",views.leaderboard,name="leaderboard"),
+    path("profile/<str:username>/",views.player_profile,name="player_profile",),
 ]

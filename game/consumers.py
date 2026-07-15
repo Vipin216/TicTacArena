@@ -3,7 +3,7 @@ import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from .game_service import process_move
-
+from .models import Room
 
 
 
@@ -21,10 +21,29 @@ class GameConsumer(WebsocketConsumer):
         )
 
         self.accept()
+        room = Room.objects.get(room_code=self.room_code)
+
+        if self.scope["user"] == room.player1:
+            your_symbol = "X"
+        else:
+            your_symbol = "O"
+        self.send(
+            text_data=json.dumps(
+                {
+                    "type": "game_state",
+                    "board": room.board,
+                    "current_turn": room.current_turn,
+                    "winner": room.winner,
+                    "your_symbol":your_symbol,
+                }
+        )
+    )
+
+        
 
         print(f"{self.channel_name} joined {self.room_group_name}")
 
-        from .models import Room
+        
 
         room = Room.objects.get(room_code=self.room_code)
 

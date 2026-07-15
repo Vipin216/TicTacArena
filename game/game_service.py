@@ -1,5 +1,6 @@
 from asgiref.sync import async_to_sync
 from .models import Room,Match
+import math
 from .game_logic import (
     is_cell_empty,
     make_move,
@@ -112,6 +113,16 @@ def process_move(consumer, data):
         save_match(room)
         update_player_stats(room)
 
+        if room.winner=="X":
+            calculate_elo(room.player1,room.player2,"player1",)
+        
+        elif room.winner=="O":
+            calculate_elo(room.player1,room.player2,"player2",)
+        
+        else:
+            calculate_elo(room.player1,room.player2,"draw",)
+
+
     async_to_sync(
         consumer.channel_layer.group_send
     )(
@@ -125,3 +136,28 @@ def process_move(consumer, data):
             "winner": room.winner,
         }
     )
+
+
+
+
+
+def calculate_elo(player1,player2,result,k=32):
+    expected1 = 1/(1+math.pow(10,(player2.elo - player1.elo)/400))
+    expected2 = 1/(1+math.pow(10,(player1.elo - player2.elo)/400))
+    if result == "player1":
+        score1=1
+        score2 = 0
+    
+    elif result == "player2":
+        score1=0
+        score2=1
+
+    else:
+        score1=0.5
+        score2=0.5
+    
+    player1.elo = round(player1.elo + k*(score1-expected1))
+    player2.elo = round(player2.elo + k*(score2-expected2))
+
+    player1.save()
+    player2.save()

@@ -29,12 +29,12 @@ Game
 
 <p>
     <strong>Player X:</strong>
-    {{ room.player1.username }}
+    <a href="{% url 'player_profile' room.player1.username %}">{{ room.player1.username }}</a>
 </p>
 
 <p>
     <strong>Player O:</strong>
-    {{ room.player2.username }}
+    <a href="{% url 'player_profile' room.player2.username %}">{{ room.player2.username }}</a>
 </p>
 
 <hr>
@@ -65,9 +65,19 @@ Game
 
 </table>
 
+
+
+
+
 <script>
 
+let mySymbol = "";
+let currentTurn = "";
+let gameFinished = false;
 const roomCode = "{{ room.room_code }}";
+
+
+
 
 const socket = new WebSocket(
     "ws://"
@@ -86,7 +96,43 @@ socket.onmessage = function(event){
     const data = JSON.parse(event.data);
 
     console.log(data);
+    if(data.type === "game_state"){
+        mySymbol = data.your_symbol;
+        currentTurn = data.current_turn;
 
+        const board = data.board;
+
+        board.forEach((row,rowIndex)=>{
+
+            row.forEach((cell,colIndex)=>{
+
+                const selector =
+                    '[data-row="' + rowIndex +
+                    '"][data-col="' + colIndex + '"]';
+
+                document.querySelector(selector).textContent = cell;
+
+            });
+
+        });
+
+        if(data.winner){
+        
+            gameFinished = true;
+
+            document.getElementById("status").textContent =
+                "Winner: " + data.winner;
+
+        }
+
+        else{
+
+            document.getElementById("status").textContent =
+                "Current Turn: " + data.current_turn;
+
+        }
+
+    }
     if(data.type === "move"){
 
         const selector ='[data-row="' + data.row + '"][data-col="' + data.col + '"]';
@@ -94,13 +140,17 @@ socket.onmessage = function(event){
         const cell = document.querySelector(selector);
 
         cell.textContent = data.symbol;
+        currentTurn = data.next_turn;
         if(data.winner == "D"){
+            gameFinished = true;
             document.getElementById("status").textContent = "Game Draw!";
         }
         else if(data.winner){
+            gameFinished = true;
             document.getElementById("status").textContent = "Winner: " + data.winner;
         }
         else{
+            currentTurn = data.next_turn;
             document.getElementById("status").textContent = "Current Turn: " + data.next_turn;
         }            
     }
@@ -116,9 +166,27 @@ socket.onclose = function(){
 
 const cells = document.querySelectorAll("#board td");
 
+
+
+
 cells.forEach(cell => {
 
     cell.onclick = function(){
+
+        if(gameFinished){
+            return;
+        }
+        if(this.textContent !== ""){
+            return;
+        }
+
+        if(mySymbol !== currentTurn){
+
+            alert("Not your turn!");
+
+            return;
+
+        }
 
         socket.send(
             JSON.stringify({
