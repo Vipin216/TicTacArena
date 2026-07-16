@@ -42,3 +42,19 @@ EOF
 python manage.py migrate
 
 python manage.py collectstatic --noinput
+
+
+
+cp deployment/daphne.service /etc/systemd/system/daphne.service
+
+systemctl daemon-reload
+
+systemctl enable daphne
+
+systemctl start daphne
+
+cp deployment/nginx.conf /etc/nginx/sites-available/default
+
+nginx -t
+
+systemctl restart nginx
