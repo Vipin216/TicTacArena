@@ -26,3 +26,4 @@ cp deployment/nginx.conf /etc/nginx/sites-available/default
 nginx -t
 
 systemctl restart nginx
+
