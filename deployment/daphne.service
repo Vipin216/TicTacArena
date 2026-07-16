@@ -5,25 +5,9 @@ After=network.target
 [Service]
 User=ubuntu
 WorkingDirectory=/home/ubuntu/TicTacArena
+Environment="DJANGO_SETTINGS_MODULE=config.settings"
 ExecStart=/home/ubuntu/TicTacArena/venv/bin/daphne -b 0.0.0.0 -p 8001 config.asgi:application
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
-
-
-
-cp deployment/daphne.service /etc/systemd/system/daphne.service
-
-systemctl daemon-reload
-
-systemctl enable daphne
-
-systemctl start daphne
-
-cp deployment/nginx.conf /etc/nginx/sites-available/default
-
-nginx -t
-
-systemctl restart nginx
-
