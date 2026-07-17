@@ -36,6 +36,10 @@ DB_PASSWORD=$(aws ssm get-parameter --name "/tictacarena/DB_PASSWORD" --with-dec
 DB_HOST=$(aws ssm get-parameter --name "/tictacarena/DB_HOST" --query Parameter.Value --output text)
 
 DB_PORT=$(aws ssm get-parameter --name "/tictacarena/DB_PORT" --query Parameter.Value --output text)
+
+REDIS_HOST=$(aws ssm get-parameter --name "/tictacarena/REDIS_HOST" --query Parameter.Value --output text)
+
+
 EOF
 
 
